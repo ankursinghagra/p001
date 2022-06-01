@@ -1,20 +1,29 @@
 <?php
 error_reporting(E_ERROR | E_PARSE); 
-function create_directories($mainfolder,$dataobject, $path = null){
+function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 	//$dataobject is the one complete chapter object.
 
 	if(!empty($dataobject)){
 
+		$folder_no_a = str_pad(($key_a+1), 2, '0', STR_PAD_LEFT);
+
+		$dataobject->name = $folder_no_a."_".sanitize($dataobject->name);
 		//creating the chapter folder.
 		if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name)) {
-			mkdir('output/'.$mainfolder.'/'.$dataobject->name);
+			mkdir('output/'.$mainfolder.'/'.sanitize($dataobject->name));
 		}
 
 		foreach ($dataobject->sequences[0]->exercises as $key => $value) {
+
+			$folder_no_b = str_pad(($key+1), 2, '0', STR_PAD_LEFT);
+
 			if(empty($value->title)){
-				$value->title = "Untitled";
+					$value->title = $folder_no_b."_Untitled";
+			}else{
+					$value->title = $folder_no_b."_".sanitize($value->title);
 			}
 			
+
 			//Creating the folders as the title from json.
 			if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title)) {
 				mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title);
@@ -372,4 +381,8 @@ function url(){
     $_SERVER['SERVER_NAME'],
     $_SERVER['REQUEST_URI']
   );
+}
+
+function sanitize($string){
+	return preg_replace("/[^a-z0-9\_\-\.]/i", '', $string);
 }

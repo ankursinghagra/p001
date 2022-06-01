@@ -42,7 +42,7 @@ $ccidecoded = json_decode($completecourseinfodata);
 
 if(!empty($ccidecoded)){
     foreach ($ccidecoded->chapters as $key => $value) {
-       create_directories($explodedpath[2],$value, null);
+       create_directories($explodedpath[2],$value,$key, null);
     }
 }
 ?>
