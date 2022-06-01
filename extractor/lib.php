@@ -83,7 +83,8 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 							}
 						}
 
-						if($jsencode->exercise->media[0]->{"@type"} == "movie"){
+						if($intervalue->{"@type"} == "movie"){
+							$tempextras2 = explode('.',$intervalue->{"@url"});
 							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img')) {
 								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img');
 							}
@@ -97,9 +98,9 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 
 							file_put_contents($mediapathtxt,json_encode($objarray['meta-data']));
 
-							if(!empty($tempextras)){
+							if(!empty($tempextras2)){
 
-								$source1 = 'uploads/'.$mainfolder.'/medias/'.$tempextras[0];
+								$source1 = 'uploads/'.$mainfolder.'/medias/'.$tempextras2[0];
 								$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"};
 
 								extract_copy_files($source1,$destination1);
