@@ -106,6 +106,33 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 							}
 						}
 
+						//----------------------
+						if($intervalue->{"@detailedtype"} == "image"){
+
+							$mediapath = explode('.',$intervalue->{"@url"});
+							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img')) {
+								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img');
+							}
+							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"})) {
+								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"});
+							}
+
+							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"}."/meta-data.txt";
+
+							$objarray = get_object_vars($intervalue);
+
+							file_put_contents($mediapathtxt,json_encode($objarray['meta-data']));
+
+							if(!empty($mediapath)){
+
+								$source1 = 'uploads/'.$mainfolder.'/medias/'.$mediapath[0];
+								$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"};
+
+								extract_copy_files($source1,$destination1);
+							}
+
+						}
+
 					}
 				}
 				//ends.
@@ -193,11 +220,20 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 			}
 
 			if(!empty($jsencode->exercise->text)){
+
 				$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title."/text.txt";
+
 				if(is_array($jsencode->exercise->text)){
 					file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->text[1]->{"#text"})));
 				}else{
-					file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->text->{"#text"})));
+
+					if(!empty($jsencode->exercise->text->{"#text"})){
+						file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->text->{"#text"})));
+					}
+					if(!empty($jsencode->exercise->text)){
+						file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->text)));
+					}
+					
 				}
 			}
 
