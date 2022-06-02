@@ -10,6 +10,9 @@ $dir = $explodedpath[1].'/'.$explodedpath[2];
 
 if(!is_dir('output/'.$explodedpath[2])) {
     mkdir('output/'.$explodedpath[2]);
+}else{
+  rmrf('output/'.$explodedpath[2]);
+  mkdir('output/'.$explodedpath[2]);
 }
 
 // //get all the files under the respective folder.

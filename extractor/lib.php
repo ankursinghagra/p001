@@ -590,3 +590,15 @@ function url(){
 function sanitize($string){
 	return preg_replace("/[^a-z0-9\_\-\.]/i", '', $string);
 }
+
+// remove directory and sub itemss
+function rmrf($dir) {
+    foreach (glob($dir) as $file) {
+        if (is_dir($file)) { 
+            rmrf("$file/*");
+            rmdir($file);
+        } else {
+            unlink($file);
+        }
+    }
+}
