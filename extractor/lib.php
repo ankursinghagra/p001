@@ -35,6 +35,16 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 					if($md->key == 'callToAction' && !empty($md->value)){
 						file_put_contents('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/callToAction.txt' , $md->value);
 					}
+					if($md->key == 'bgImage.media' && isset($md->value->media)){
+
+						$key_folder = explode('.',$md->value->media->{"@url"});
+						$source1 = 'uploads/'.$mainfolder.'/medias/'.$key_folder[0];
+						$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/background';
+						if(!is_dir($destination1)) {
+							mkdir($destination1);
+						}
+						extract_copy_files($source1,$destination1);
+					}
 				}
 			}
 
@@ -229,19 +239,43 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 
 			}
 
+
+			$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title."/text.txt";
+
+			if(isset($jsencode->exercise->title)){
+				if(isset($jsencode->exercise->title->{'#text'}) && !empty($jsencode->exercise->title->{'#text'}) && is_string($jsencode->exercise->title->{'#text'})){
+					file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->title->{'#text'})).PHP_EOL, FILE_APPEND);
+				}else if(isset($jsencode->exercise->title) && !empty($jsencode->exercise->title) && is_string($jsencode->exercise->title)){
+					file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->title)).PHP_EOL, FILE_APPEND);
+				}
+			}
+
+			if(isset($jsencode->exercise->instruction)){
+				if(isset($jsencode->exercise->instruction->{'#text'}) && !empty($jsencode->exercise->instruction->{'#text'}) && is_string($jsencode->exercise->instruction->{'#text'})){
+					file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->instruction->{'#text'})).PHP_EOL, FILE_APPEND);
+				}else if(isset($jsencode->exercise->instruction) && !empty($jsencode->exercise->instruction) && is_string($jsencode->exercise->instruction)){
+					file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->instruction)).PHP_EOL, FILE_APPEND);
+				}
+			}
+
 			if(!empty($jsencode->exercise->text)){
-
-				$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title."/text.txt";
-
-				if(is_array($jsencode->exercise->text)){
-					file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->text[1]->{"#text"})));
+				if(isset($jsencode->exercise->text) && is_array($jsencode->exercise->text)){
+					$text_g = '';
+					foreach($jsencode->exercise->text as $text){
+						if(isset($text->{'#text'}) && !empty($text->{'#text'})){
+							$text_g.=json_encode(strip_tags($text->{'#text'})).PHP_EOL;
+						}
+					}
+					if(!empty($text_g)){
+						file_put_contents($mediapathtxt,$text_g,FILE_APPEND);
+					}
 				}else{
 
-					if(!empty($jsencode->exercise->text->{"#text"})){
-						file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->text->{"#text"})));
+					if(isset($jsencode->exercise->text->{"#text"}) && !empty($jsencode->exercise->text->{"#text"}) && is_string($jsencode->exercise->text->{"#text"})){
+						file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->text->{"#text"})).PHP_EOL, FILE_APPEND);
 					}
-					if(!empty($jsencode->exercise->text)){
-						file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->text)));
+					if(isset($jsencode->exercise->text) && !empty($jsencode->exercise->text) && is_string($jsencode->exercise->text)){
+						file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->text)).PHP_EOL, FILE_APPEND);
 					}
 					
 				}
@@ -386,6 +420,130 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 					}
 				}
 			}
+
+			if(isset($jsencode->exercise->alternatives->alternative)){
+
+				if(is_array($jsencode->exercise->alternatives->alternative)){
+					foreach($jsencode->exercise->alternatives->alternative as $key_alt => $alt){
+
+						if( isset($alt->text->{"#text"}) || (isset($alt->media)&&isset($alt->media->{"@detailedtype"})) || isset($alt->response)){
+
+							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative')) {
+								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative');
+							}
+							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1))) {
+								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1));
+							}
+						}
+
+						if(isset($alt->text->{"#text"})){
+							file_put_contents('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/text.txt' , strip_tags($alt->text->{"#text"}));
+						}
+
+						if(isset($alt->media)&&isset($alt->media->{"@detailedtype"})){
+								$key_folder = explode('.',$alt->media->{"@url"});
+								$source1 = 'uploads/'.$mainfolder.'/medias/'.$key_folder[0];
+								if($alt->media->{"@detailedtype"} == 'image'){
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/img';
+								}else if($alt->media->{"@detailedtype"} == 'sound'){
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/audio';
+								}else{
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/media';
+								}
+								if(!is_dir($destination1)) {
+									mkdir($destination1);
+								}
+								extract_copy_files($source1,$destination1);
+								if(isset($alt->media->{'meta-data'})){
+									file_put_contents($destination1.'/meta_data.txt' , json_encode($alt->media->{'meta-data'}));
+								}
+						}
+						if(isset($alt->response)){
+							if(isset($alt->response->media)&&isset($alt->response->media->{"@detailedtype"})){
+								$key_folder = explode('.',$alt->response->media->{"@url"});
+								$source1 = 'uploads/'.$mainfolder.'/medias/'.$key_folder[0];
+								if($alt->response->media->{"@detailedtype"} == 'image'){
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/img';
+								}else if($alt->response->media->{"@detailedtype"} == 'sound'){
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/audio';
+								}else{
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/media';
+								}
+								if(!is_dir($destination1)) {
+									mkdir($destination1);
+								}
+								extract_copy_files($source1,$destination1);
+
+								if(isset($alt->response->media->{'meta-data'})){
+									file_put_contents($destination1.'/response_meta_data.txt' ,json_encode($alt->response->media->{'meta-data'}));
+								}
+							}
+							if(isset($alt->response->text->{"#text"})){
+								file_put_contents('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/response_text.txt' , strip_tags($alt->response->text->{"#text"}));
+							}
+						}
+					}
+				}else{
+					$alt = $jsencode->exercise->alternatives->alternative;
+
+					if( isset($alt->text->{"#text"}) || (isset($alt->media)&&isset($alt->media->{"@detailedtype"})) || (isset($alt->response)&&isset($alt->response->media)&&isset($alt->response->media->{"@detailedtype"}))){
+
+							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative')) {
+								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative');
+							}
+						}
+
+						if(isset($alt->text->{"#text"})){
+							file_put_contents('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/text.txt' , strip_tags($alt->text->{"#text"}));
+						}
+
+						if(isset($alt->media)&&isset($alt->media->{"@detailedtype"})){
+								$key_folder = explode('.',$alt->media->{"@url"});
+								$source1 = 'uploads/'.$mainfolder.'/medias/'.$key_folder[0];
+								if($alt->media->{"@detailedtype"} == 'image'){
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/img';
+								}else if($alt->media->{"@detailedtype"} == 'sound'){
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/audio';
+								}else{
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/media';
+								}
+								if(!is_dir($destination1)) {
+									mkdir($destination1);
+								}
+								extract_copy_files($source1,$destination1);
+								if(isset($alt->media->{'meta-data'})){
+									file_put_contents($destination1.'/meta_data.txt' , json_encode($alt->media->{'meta-data'}));
+								}
+						}
+						if(isset($alt->response)){
+							if(isset($alt->response->media)&&isset($alt->response->media->{"@detailedtype"})){
+								$key_folder = explode('.',$alt->response->media->{"@url"});
+								$source1 = 'uploads/'.$mainfolder.'/medias/'.$key_folder[0];
+								if($alt->response->media->{"@detailedtype"} == 'image'){
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/img';
+								}else if($alt->response->media->{"@detailedtype"} == 'sound'){
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/audio';
+								}else{
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/media';
+								}
+								if(!is_dir($destination1)) {
+									mkdir($destination1);
+								}
+								extract_copy_files($source1,$destination1);
+
+								if(isset($alt->response->media->{'meta-data'})){
+									file_put_contents($destination1.'/response_meta_data.txt' ,json_encode($alt->response->media->{'meta-data'}));
+								}
+							}
+							if(isset($alt->response->text->{"#text"})){
+								file_put_contents('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/response_text.txt' , strip_tags($alt->response->text->{"#text"}));
+							}
+						}
+				}
+			}
+
+
+
 		}//End of foreach.
 	}
 }
