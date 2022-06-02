@@ -29,6 +29,15 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 				mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title);
 			}
 
+			//creating calltoaction text file 
+			if(isset($value->metadatas)){
+				foreach($value->metadatas as $md){
+					if($md->key == 'callToAction' && !empty($md->value)){
+						file_put_contents('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/callToAction.txt' , $md->value);
+					}
+				}
+			}
+
 			//1. Creating the thumbnais folders.=======================================
 
 			if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/thumbnails')) {
