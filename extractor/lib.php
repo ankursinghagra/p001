@@ -457,7 +457,12 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 							wrt2file($mediapathtxt,json_encode($objarray['meta-data']));
 
 							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.$itemvalue->media[0]->{"@id"}."/text.txt";
-							wrt2file($mediapathtxt,stripp($itemvalue->description->text));
+							if(isset($itemvalue->title) && !empty($itemvalue->title) && is_string($itemvalue->title)){
+								wrt2file($mediapathtxt,stripp($itemvalue->title));
+							}
+							if(isset($itemvalue->description->text) && !empty($itemvalue->description->text) && is_string($itemvalue->description->text)){
+								wrt2file($mediapathtxt,stripp($itemvalue->description->text));
+							}
 
 						}
 					}
@@ -506,23 +511,49 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 								}
 						}
 						if(isset($alt->response)){
-							if(isset($alt->response->media)&&isset($alt->response->media->{"@detailedtype"})){
-								$key_folder = explode('.',$alt->response->media->{"@url"});
-								$source1 = 'uploads/'.$mainfolder.'/medias/'.$key_folder[0];
-								if($alt->response->media->{"@detailedtype"} == 'image'){
-									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/img';
-								}else if($alt->response->media->{"@detailedtype"} == 'sound'){
-									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/audio';
-								}else{
-									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/media';
-								}
-								if(!is_dir($destination1)) {
-									mkdir($destination1);
-								}
-								extract_copy_files($source1,$destination1);
+							if(isset($alt->response->media) && is_array($alt->response->media)){
+								foreach($alt->response->media as $media){
+									if(isset($media->{"@url"}) && is_string($media->{"@url"}) && !empty($media->{"@url"})){										
+										$key_folder = explode('.',$media->{"@url"});
+										$source1 = 'uploads/'.$mainfolder.'/medias/'.$key_folder[0];
+										if($media->{"@detailedtype"} == 'image'){
+											$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/img';
+										}else if($media->{"@detailedtype"} == 'sound'){
+											$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/audio';
+										}else{
+											$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/media';
+										}
+										if(!is_dir($destination1)) {
+											mkdir($destination1);
+										}
+										extract_copy_files($source1,$destination1);
 
-								if(isset($alt->response->media->{'meta-data'})){
-									wrt2file($destination1.'/response_meta_data.txt' ,json_encode($alt->response->media->{'meta-data'}));
+										if(isset($media->{'meta-data'})){
+											wrt2file($destination1.'/response_meta_data.txt' ,json_encode($media->{'meta-data'}));
+										}
+									}
+								}
+
+							}elseif(isset($alt->response->media)&&isset($alt->response->media->{"@detailedtype"})){
+								if(isset($alt->response->media->{"@url"}) && is_string($alt->response->media->{"@url"}) && !empty($alt->response->media->{"@url"})){
+
+									$key_folder = explode('.',$alt->response->media->{"@url"});
+									$source1 = 'uploads/'.$mainfolder.'/medias/'.$key_folder[0];
+									if($alt->response->media->{"@detailedtype"} == 'image'){
+										$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/img';
+									}else if($alt->response->media->{"@detailedtype"} == 'sound'){
+										$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/audio';
+									}else{
+										$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/media';
+									}
+									if(!is_dir($destination1)) {
+										mkdir($destination1);
+									}
+									extract_copy_files($source1,$destination1);
+
+									if(isset($alt->response->media->{'meta-data'})){
+										wrt2file($destination1.'/response_meta_data.txt' ,json_encode($alt->response->media->{'meta-data'}));
+									}
 								}
 							}
 							if(isset($alt->response->text->{"#text"})){
@@ -819,41 +850,48 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 										}
 									}
 								}
+							}
+						}
 
-								if(is_array($container->media)){
-									if($container->media){
-										$mediapath = explode('.',$container->media[0]->{"@url"});
-										if($container->media[0]->{"@detailedtype"} == "image"){
-											if(!is_dir($mediapathtxt.'/img')) {
-												mkdir($mediapathtxt.'/img');
-											}
-											if(!is_dir($mediapathtxt.'/img/'.$container->media[0]->{"@id"})) {
-												mkdir($mediapathtxt.'/img/'.$container->media[0]->{"@id"}.'/');
-											}
+						if(isset($container->alternatives->alternative)){
+							if(is_array($container->alternatives->alternative)){
+								if(!is_dir($mediapathtxt.'/alternative/')) {
+									mkdir($mediapathtxt.'/alternative/');
+								}
+								foreach($container->alternatives->alternative as $k_alt => $alternative){
+									$alt_folder = $mediapathtxt.'/alternative/'.($k_alt+1);
+									if(!is_dir($alt_folder.'/')) {
+										mkdir($alt_folder.'/');
+									}
+									$text_file = $alt_folder.'/text.txt';
 
-											$mediapathtxt_ = $mediapathtxt.'/img/'.$container->media[0]->{"@id"}."/meta-data.txt";
-
-											$objarray = get_object_vars($container->media[0]);
-
-											wrt2file($mediapathtxt_,json_encode($objarray['meta-data']));
-
-											if(!empty($mediapath)){
-
-												$source1 = 'uploads/'.$mainfolder.'/medias/'.$mediapath[0];
-												$destination1 = $mediapathtxt.'/img/'.$container->media[0]->{"@id"}.'/';
-
-												extract_copy_files($source1,$destination1);
+									if(isset($alternative->text) && is_array($alternative->text)){
+										$text_g = '';
+										foreach($alternative->text as $text){
+											if(isset($text->{'#text'}) && !empty($text->{'#text'})){
+												$text_g.=stripp($text->{'#text'})."\n";
 											}
 										}
-									}
+										if(!empty($text_g)){
+											wrt2file($text_file,$text_g);
+										}
+									}else{
 
+										if(isset($alternative->text->{"#text"}) && !empty($alternative->text->{"#text"}) && is_string($alternative->text->{"#text"})){
+											wrt2file($text_file,stripp($alternative->text->{"#text"}));
+										}
+										if(isset($alternative->text) && !empty($alternative->text) && is_string($alternative->text)){
+											wrt2file($text_file,stripp($alternative->text));
+										}
+										
+									}
+											
+										
 								}
 							}
 						}
 
 					}
-				}else{
-					$container = $jsencode->exercise->containers->container;
 				}
 			}
 
@@ -954,6 +992,6 @@ function wrt2file($file, $text){
 		$myfile = fopen($file, "a")  ;
 	}
 
-	fwrite($myfile, $text."\n");	
+	fwrite($myfile, htmlspecialchars_decode($text)."\n");	
 	fclose($myfile);
 }
