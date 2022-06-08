@@ -47,6 +47,7 @@ if(!empty($ccidecoded)){
     foreach ($ccidecoded->chapters as $key => $value) {
        create_directories($explodedpath[2],$value,$key, null);
     }
+    copy_theme_images($explodedpath[2]);
 }
 ?>
 

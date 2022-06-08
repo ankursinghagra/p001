@@ -10,7 +10,7 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 		$dataobject->name = $folder_no_a."_".sanitize($dataobject->name);
 		//creating the chapter folder.
 		if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name)) {
-			mkdir('output/'.$mainfolder.'/'.sanitize($dataobject->name));
+			mkdir('output/'.$mainfolder.'/'.sanitize($dataobject->name).'/');
 		}
 
 		foreach ($dataobject->sequences[0]->exercises as $key => $value) {
@@ -26,14 +26,14 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 
 			//Creating the folders as the title from json.
 			if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title)) {
-				mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title);
+				mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/');
 			}
 
 			//creating calltoaction text file 
 			if(isset($value->metadatas)){
 				foreach($value->metadatas as $md){
 					if($md->key == 'callToAction' && !empty($md->value)){
-						file_put_contents('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/callToAction.txt' , $md->value);
+						wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/callToAction.txt' , $md->value);
 					}
 					if($md->key == 'bgImage.media' && isset($md->value->media)){
 
@@ -82,20 +82,20 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio');
 							}
 							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$intervalue->{"@id"})) {
-								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$intervalue->{"@id"});
+								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$intervalue->{"@id"}.'/');
 							}
 
 							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$intervalue->{"@id"}."/meta-data.txt";
 
 							$objarray = get_object_vars($intervalue);
 
-							file_put_contents($mediapathtxt,json_encode($objarray['meta-data']));
+							wrt2file($mediapathtxt,json_encode($objarray['meta-data']));
 
 							if(!empty($intervalue->{"@url"})){
 
 								if(!empty($tempextras)){
 									$source1 = 'uploads/'.$mainfolder.'/medias/'.$tempextras[0];
-									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$intervalue->{"@id"};
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$intervalue->{"@id"}.'/';
 
 									extract_copy_files($source1,$destination1);
 								}
@@ -108,14 +108,14 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img');
 							}
 							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"})) {
-								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"});
+								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"}.'/');
 							}
 
 							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"}."/meta-data.txt";
 
 							$objarray = get_object_vars($intervalue);
 
-							file_put_contents($mediapathtxt,json_encode($objarray['meta-data']));
+							wrt2file($mediapathtxt,json_encode($objarray['meta-data']));
 
 							if(!empty($tempextras2)){
 
@@ -134,19 +134,19 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img');
 							}
 							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"})) {
-								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"});
+								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"}.'/');
 							}
 
 							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"}."/meta-data.txt";
 
 							$objarray = get_object_vars($intervalue);
 
-							file_put_contents($mediapathtxt,json_encode($objarray['meta-data']));
+							wrt2file($mediapathtxt,json_encode($objarray['meta-data']));
 
 							if(!empty($mediapath)){
 
 								$source1 = 'uploads/'.$mainfolder.'/medias/'.$mediapath[0];
-								$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"};
+								$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$intervalue->{"@id"}.'/';
 
 								extract_copy_files($source1,$destination1);
 							}
@@ -165,20 +165,20 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio');
 						}
 						if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$jsencode->exercise->media->{"@id"})) {
-							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$jsencode->exercise->media->{"@id"});
+							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$jsencode->exercise->media->{"@id"}.'/');
 						}
 
 						$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$jsencode->exercise->media->{"@id"}."/meta-data.txt";
 
 						$objarray = get_object_vars($jsencode->exercise->media);
 
-						file_put_contents($mediapathtxt,json_encode($objarray['meta-data']));
+						wrt2file($mediapathtxt,json_encode($objarray['meta-data']));
 
 						if(!empty($jsencode->exercise->media->{"@url"})){
 
 							if(!empty($mediapath)){
 								$source1 = 'uploads/'.$mainfolder.'/medias/'.$mediapath[0];
-								$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$jsencode->exercise->media->{"@id"};
+								$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/audio/'.$jsencode->exercise->media->{"@id"}.'/';
 
 								extract_copy_files($source1,$destination1);
 							}
@@ -189,19 +189,19 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/video');
 						}
 						if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/video/'.$jsencode->exercise->media->{"@id"})) {
-							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/video/'.$jsencode->exercise->media->{"@id"});
+							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/video/'.$jsencode->exercise->media->{"@id"}.'/');
 						}
 
 						$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/video/'.$jsencode->exercise->media->{"@id"}."/meta-data.txt";
 
 						$objarray = get_object_vars($jsencode->exercise->media);
 
-						file_put_contents($mediapathtxt,json_encode($objarray['meta-data']));
+						wrt2file($mediapathtxt,json_encode($objarray['meta-data']));
 
 						if(!empty($mediapath)){
 
 							$source1 = 'uploads/'.$mainfolder.'/medias/'.$mediapath[0];
-							$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/video/'.$jsencode->exercise->media->{"@id"};
+							$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/video/'.$jsencode->exercise->media->{"@id"}.'/';
 
 							extract_copy_files($source1,$destination1);
 						}
@@ -216,19 +216,19 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img');
 							}
 							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$jsencode->exercise->media[0]->{"@id"})) {
-								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$jsencode->exercise->media[0]->{"@id"});
+								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$jsencode->exercise->media[0]->{"@id"}.'/');
 							}
 
 							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$jsencode->exercise->media[0]->{"@id"}."/meta-data.txt";
 
 							$objarray = get_object_vars($jsencode->exercise->media[0]);
 
-							file_put_contents($mediapathtxt,json_encode($objarray['meta-data']));
+							wrt2file($mediapathtxt,json_encode($objarray['meta-data']));
 
 							if(!empty($mediapath)){
 
 								$source1 = 'uploads/'.$mainfolder.'/medias/'.$mediapath[0];
-								$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$jsencode->exercise->media[0]->{"@id"};
+								$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/img/'.$jsencode->exercise->media[0]->{"@id"}.'/';
 
 								extract_copy_files($source1,$destination1);
 							}
@@ -236,7 +236,6 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 					}
 
 				}
-
 			}
 
 
@@ -244,17 +243,61 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 
 			if(isset($jsencode->exercise->title)){
 				if(isset($jsencode->exercise->title->{'#text'}) && !empty($jsencode->exercise->title->{'#text'}) && is_string($jsencode->exercise->title->{'#text'})){
-					file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->title->{'#text'})).PHP_EOL, FILE_APPEND);
+					//wrt2file($mediapathtxt,json_encode(stripp($jsencode->exercise->title->{'#text'})));
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->title->{'#text'}));
 				}else if(isset($jsencode->exercise->title) && !empty($jsencode->exercise->title) && is_string($jsencode->exercise->title)){
-					file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->title)).PHP_EOL, FILE_APPEND);
+					//wrt2file($mediapathtxt,json_encode(stripp($jsencode->exercise->title)));
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->title));
 				}
 			}
 
 			if(isset($jsencode->exercise->instruction)){
 				if(isset($jsencode->exercise->instruction->{'#text'}) && !empty($jsencode->exercise->instruction->{'#text'}) && is_string($jsencode->exercise->instruction->{'#text'})){
-					file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->instruction->{'#text'})).PHP_EOL, FILE_APPEND);
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->instruction->{'#text'}));
 				}else if(isset($jsencode->exercise->instruction) && !empty($jsencode->exercise->instruction) && is_string($jsencode->exercise->instruction)){
-					file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->instruction)).PHP_EOL, FILE_APPEND);
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->instruction));
+				}
+			}
+			if(isset($jsencode->exercise->question)){
+				if(isset($jsencode->exercise->question->{'#text'}) && !empty($jsencode->exercise->question->{'#text'}) && is_string($jsencode->exercise->question->{'#text'})){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->question->{'#text'}));
+				}else if(isset($jsencode->exercise->question) && !empty($jsencode->exercise->question) && is_string($jsencode->exercise->question)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->question));
+				}
+			}
+			if(isset($jsencode->exercise->introduction)){
+				if(isset($jsencode->exercise->introduction->{'#text'}) && !empty($jsencode->exercise->introduction->{'#text'}) && is_string($jsencode->exercise->introduction->{'#text'})){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->introduction->{'#text'}));
+				}else if(isset($jsencode->exercise->introduction) && !empty($jsencode->exercise->introduction) && is_string($jsencode->exercise->introduction)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->introduction));
+				}
+			}
+			if(isset($jsencode->exercise->intro)){
+				if(isset($jsencode->exercise->intro->text) && !empty($jsencode->exercise->intro->text) && is_string($jsencode->exercise->intro->text)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->intro->text));
+				}else if(isset($jsencode->exercise->intro) && !empty($jsencode->exercise->intro) && is_string($jsencode->exercise->intro)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->intro));
+				}
+			}
+			if(isset($jsencode->exercise->graphiccaption)){
+				if(isset($jsencode->exercise->graphiccaption->text) && !empty($jsencode->exercise->graphiccaption->text) && is_string($jsencode->exercise->graphiccaption->text)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->graphiccaption->text));
+				}else if(isset($jsencode->exercise->graphiccaption) && !empty($jsencode->exercise->graphiccaption) && is_string($jsencode->exercise->graphiccaption)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->graphiccaption));
+				}
+			}
+			if(isset($jsencode->exercise->graphictitle)){
+				if(isset($jsencode->exercise->graphictitle->text) && !empty($jsencode->exercise->graphictitle->text) && is_string($jsencode->exercise->graphictitle->text)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->graphictitle->text));
+				}else if(isset($jsencode->exercise->graphictitle) && !empty($jsencode->exercise->graphictitle) && is_string($jsencode->exercise->graphictitle)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->graphictitle));
+				}
+			}
+			if(isset($jsencode->exercise->conclusion)){
+				if(isset($jsencode->exercise->conclusion->text) && !empty($jsencode->exercise->conclusion->text) && is_string($jsencode->exercise->conclusion->text)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->conclusion->text));
+				}else if(isset($jsencode->exercise->conclusion) && !empty($jsencode->exercise->conclusion) && is_string($jsencode->exercise->conclusion)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->conclusion));
 				}
 			}
 
@@ -263,19 +306,19 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 					$text_g = '';
 					foreach($jsencode->exercise->text as $text){
 						if(isset($text->{'#text'}) && !empty($text->{'#text'})){
-							$text_g.=json_encode(strip_tags($text->{'#text'})).PHP_EOL;
+							$text_g.=stripp($text->{'#text'})."\n";
 						}
 					}
 					if(!empty($text_g)){
-						file_put_contents($mediapathtxt,$text_g,FILE_APPEND);
+						wrt2file($mediapathtxt,$text_g);
 					}
 				}else{
 
 					if(isset($jsencode->exercise->text->{"#text"}) && !empty($jsencode->exercise->text->{"#text"}) && is_string($jsencode->exercise->text->{"#text"})){
-						file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->text->{"#text"})).PHP_EOL, FILE_APPEND);
+						wrt2file($mediapathtxt,stripp($jsencode->exercise->text->{"#text"}));
 					}
 					if(isset($jsencode->exercise->text) && !empty($jsencode->exercise->text) && is_string($jsencode->exercise->text)){
-						file_put_contents($mediapathtxt,json_encode(strip_tags($jsencode->exercise->text)).PHP_EOL, FILE_APPEND);
+						wrt2file($mediapathtxt,stripp($jsencode->exercise->text));
 					}
 					
 				}
@@ -313,7 +356,7 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 
 							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/marks/'.$mvalue->{"@elemnum"}."/text.txt";
 
-							file_put_contents($mediapathtxt,json_encode(strip_tags($mvalue->text->{"#text"})));
+							wrt2file($mediapathtxt,stripp($mvalue->text->{"#text"}));
 
 						}
 
@@ -365,10 +408,10 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 
 							$objarray = get_object_vars($bpvalue->media);
 
-							file_put_contents($mediapathtxt,json_encode($objarray['meta-data']));
+							wrt2file($mediapathtxt,json_encode($objarray['meta-data']));
 
 							$bptxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.$bpvalue->media->{"@id"}."/text.txt";
-							file_put_contents($bptxt,json_encode(strip_tags($bpvalue->text)));
+							wrt2file($bptxt,stripp($bpvalue->text));
 
 
 							if(!empty($bpvalue->media->{"@url"})){
@@ -411,10 +454,10 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 
 							$objarray = get_object_vars($itemvalue->media[0]);
 
-							file_put_contents($mediapathtxt,json_encode($objarray['meta-data']));
+							wrt2file($mediapathtxt,json_encode($objarray['meta-data']));
 
 							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.$itemvalue->media[0]->{"@id"}."/text.txt";
-							file_put_contents($mediapathtxt,json_encode(strip_tags($itemvalue->description->text)));
+							wrt2file($mediapathtxt,stripp($itemvalue->description->text));
 
 						}
 					}
@@ -426,7 +469,7 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 				if(is_array($jsencode->exercise->alternatives->alternative)){
 					foreach($jsencode->exercise->alternatives->alternative as $key_alt => $alt){
 
-						if( isset($alt->text->{"#text"}) || (isset($alt->media)&&isset($alt->media->{"@detailedtype"})) || isset($alt->response)){
+						if( isset($alt->text->{"#text"})|| (isset($alt->text)&&is_string($alt->text)&&!empty($alt->text)) || (isset($alt->media)&&isset($alt->media->{"@detailedtype"})) || isset($alt->response)){
 
 							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative')) {
 								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative');
@@ -437,7 +480,11 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 						}
 
 						if(isset($alt->text->{"#text"})){
-							file_put_contents('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/text.txt' , strip_tags($alt->text->{"#text"}));
+							wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/text.txt' , stripp($alt->text->{"#text"}));
+						}
+
+						if((isset($alt->text)&&is_string($alt->text)&&!empty($alt->text))){
+							wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/text.txt' , stripp($alt->text));
 						}
 
 						if(isset($alt->media)&&isset($alt->media->{"@detailedtype"})){
@@ -455,7 +502,7 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 								}
 								extract_copy_files($source1,$destination1);
 								if(isset($alt->media->{'meta-data'})){
-									file_put_contents($destination1.'/meta_data.txt' , json_encode($alt->media->{'meta-data'}));
+									wrt2file($destination1.'/meta_data.txt' , json_encode($alt->media->{'meta-data'}));
 								}
 						}
 						if(isset($alt->response)){
@@ -475,11 +522,23 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 								extract_copy_files($source1,$destination1);
 
 								if(isset($alt->response->media->{'meta-data'})){
-									file_put_contents($destination1.'/response_meta_data.txt' ,json_encode($alt->response->media->{'meta-data'}));
+									wrt2file($destination1.'/response_meta_data.txt' ,json_encode($alt->response->media->{'meta-data'}));
 								}
 							}
 							if(isset($alt->response->text->{"#text"})){
-								file_put_contents('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/response_text.txt' , strip_tags($alt->response->text->{"#text"}));
+								wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/response_text.txt' , stripp($alt->response->text->{"#text"}));
+							}else if(isset($alt->response->text)&&is_string($alt->response->text)&&!empty($alt->response->text)){
+								wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/response_text.txt' , stripp($alt->response->text));
+
+							}else if(isset($alt->response)&&is_string($alt->response)&&!empty($alt->response)){
+								wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/response_text.txt' , stripp($alt->response));
+							}
+							if(isset($alt->response->graphiccaption)){
+								if(isset($alt->response->graphiccaption->text) && !empty($alt->response->graphiccaption->text) && is_string($alt->response->graphiccaption->text)){
+									wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/text.txt' , stripp($alt->response->graphiccaption->text));
+								}else if(isset($alt->response->graphiccaption) && !empty($alt->response->graphiccaption) && is_string($alt->response->graphiccaption)){
+									wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/text.txt' , stripp($alt->response->graphiccaption));
+								}
 							}
 						}
 					}
@@ -494,7 +553,7 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 						}
 
 						if(isset($alt->text->{"#text"})){
-							file_put_contents('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/text.txt' , strip_tags($alt->text->{"#text"}));
+							wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/text.txt' , stripp($alt->text->{"#text"}));
 						}
 
 						if(isset($alt->media)&&isset($alt->media->{"@detailedtype"})){
@@ -512,7 +571,7 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 								}
 								extract_copy_files($source1,$destination1);
 								if(isset($alt->media->{'meta-data'})){
-									file_put_contents($destination1.'/meta_data.txt' , json_encode($alt->media->{'meta-data'}));
+									wrt2file($destination1.'/meta_data.txt' , json_encode($alt->media->{'meta-data'}));
 								}
 						}
 						if(isset($alt->response)){
@@ -532,19 +591,294 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 								extract_copy_files($source1,$destination1);
 
 								if(isset($alt->response->media->{'meta-data'})){
-									file_put_contents($destination1.'/response_meta_data.txt' ,json_encode($alt->response->media->{'meta-data'}));
+									wrt2file($destination1.'/response_meta_data.txt' ,json_encode($alt->response->media->{'meta-data'}));
 								}
 							}
 							if(isset($alt->response->text->{"#text"})){
-								file_put_contents('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/response_text.txt' , strip_tags($alt->response->text->{"#text"}));
+								wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/response_text.txt' , stripp($alt->response->text->{"#text"}));
+							}else if(isset($alt->response->text)&&is_string($alt->response->text)&&!empty($alt->response->text)){
+								wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/response_text.txt' , stripp($alt->response->text));
+
+							}else if(isset($alt->response)&&is_string($alt->response)&&!empty($alt->response)){
+								wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/response_text.txt' , stripp($alt->response));
 							}
 						}
 				}
 			}
 
+			if(isset($jsencode->exercise->assessment)){
+				$assessment = $jsencode->exercise->assessment;
+				if((isset($assessment->text)&&!empty($assessment->text)&&is_string($assessment->text)) || (isset($assessment->text)&&is_array($assessment->text))){
+					if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/assessment')) {
+						mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/assessment');
+					}
+				}
+				if(isset($assessment->text)&&!empty($assessment->text)&&is_string($assessment->text)){
+					wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/assessment/text.txt' , stripp($assessment->text));
+				}else if( isset($assessment->text)&&is_array($assessment->text) ){
+					foreach($assessment->text as $key_as => $as){
+						wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/assessment/text.txt' , stripp($as));
+					}
+				}
+			}
 
+			if(isset($jsencode->exercise->containers->container)){
+
+				if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/containers')) {
+					mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/containers');
+				}		
+
+				if (is_array($jsencode->exercise->containers->container)) {
+					// code...
+					foreach($jsencode->exercise->containers->container as $k_c => $container){
+
+						if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/containers/'.($k_c+1))) {
+							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/containers/'.($k_c+1));
+						}
+						$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/containers/'.($k_c+1);
+						if(isset($container->text)){
+							if(isset($container->text) && is_array($container->text)){
+								$text_g = '';
+								foreach($container->text as $text){
+									if(isset($text->{'#text'}) && !empty($text->{'#text'})){
+										$text_g.=stripp($text->{'#text'})."\n";
+									}
+								}
+								if(!empty($text_g)){
+									wrt2file($mediapathtxt.'/text.txt',$text_g);
+								}
+							}else{
+								if(isset($container->text->{"#text"}) && !empty($container->text->{"#text"}) && is_string($container->text->{"#text"})){
+									wrt2file($mediapathtxt.'/text.txt',stripp($container->text->{"#text"}));
+								}
+								if(isset($container->text) && !empty($container->text) && is_string($container->text)){
+									wrt2file($mediapathtxt.'/text.txt',stripp($container->text));
+								}								
+							}
+						}
+
+						if(isset($container->graphiccaption)){
+							if(isset($container->graphiccaption->text) && !empty($container->graphiccaption->text) && is_string($container->graphiccaption->text)){
+								wrt2file($mediapathtxt.'/text.txt',stripp($container->graphiccaption->text));
+							}else if(isset($container->graphiccaption) && !empty($container->graphiccaption) && is_string($container->graphiccaption)){
+								wrt2file($mediapathtxt.'/text.txt',stripp($container->graphiccaption));
+							}
+						}
+						if(isset($container->graphictitle)){
+							if(isset($container->graphictitle->text) && !empty($container->graphictitle->text) && is_string($container->graphictitle->text)){
+								wrt2file($mediapathtxt.'/text.txt',stripp($container->graphictitle->text));
+							}else if(isset($container->graphictitle) && !empty($container->graphictitle) && is_string($container->graphictitle)){
+								wrt2file($mediapathtxt.'/text.txt',stripp($container->graphictitle));
+							}
+						}
+						if(isset($container->navigationButtonLabel)){
+							if(isset($container->navigationButtonLabel->text) && !empty($container->navigationButtonLabel->text) && is_string($container->navigationButtonLabel->text)){
+								wrt2file($mediapathtxt.'/text.txt',stripp($container->navigationButtonLabel->text));
+							}else if(isset($container->navigationButtonLabel) && !empty($container->navigationButtonLabel) && is_string($container->navigationButtonLabel)){
+								wrt2file($mediapathtxt.'/text.txt',stripp($container->navigationButtonLabel));
+							}
+						}
+
+
+						if(isset($container->media)){
+							if(is_array($container->media)){
+								//if the media have multiple entries.
+								foreach ($container->media as $intervalue) {
+
+									if(!empty($intervalue->urls->url)){
+
+										$tempextras = explode('.',$intervalue->{"@url"});
+										if($intervalue->{"@type"} == "sound"){
+
+											if(!is_dir($mediapathtxt.'/audio')) {
+												mkdir($mediapathtxt.'/audio');
+											}
+											if(!is_dir($mediapathtxt.'/audio/'.$intervalue->{"@id"})) {
+												mkdir($mediapathtxt.'/audio/'.$intervalue->{"@id"}.'/');
+											}
+
+											$mediapathtxt_ = $mediapathtxt.'/audio/'.$intervalue->{"@id"}."/meta-data.txt";
+
+											$objarray = get_object_vars($intervalue);
+
+											wrt2file($mediapathtxt_,json_encode($objarray['meta-data']));
+
+											if(!empty($intervalue->{"@url"})){
+
+												if(!empty($tempextras)){
+													$source1 = 'uploads/'.$mainfolder.'/medias/'.$tempextras[0];
+													$destination1 = $mediapathtxt.'/audio/'.$intervalue->{"@id"}.'/';
+
+													extract_copy_files($source1,$destination1);
+												}
+											}
+										}
+
+										if($intervalue->{"@type"} == "movie"){
+											$tempextras2 = explode('.',$intervalue->{"@url"});
+											if(!is_dir($mediapathtxt.'/img')) {
+												mkdir($mediapathtxt.'/img');
+											}
+											if(!is_dir($mediapathtxt.'/img/'.$intervalue->{"@id"})) {
+												mkdir($mediapathtxt.'/img/'.$intervalue->{"@id"}.'/');
+											}
+
+											$mediapathtxt_ = $mediapathtxt.'/img/'.$intervalue->{"@id"}."/meta-data.txt";
+
+											$objarray = get_object_vars($intervalue);
+
+											wrt2file($mediapathtxt_,json_encode($objarray['meta-data']));
+
+											if(!empty($tempextras2)){
+
+												$source1 = 'uploads/'.$mainfolder.'/medias/'.$tempextras2[0];
+												$destination1 = $mediapathtxt.'/img/'.$intervalue->{"@id"};
+
+												extract_copy_files($source1,$destination1);
+											}
+										}
+
+										//----------------------
+										if($intervalue->{"@detailedtype"} == "image"){
+
+											$mediapath = explode('.',$intervalue->{"@url"});
+											if(!is_dir($mediapathtxt.'/img')) {
+												mkdir($mediapathtxt.'/img');
+											}
+											if(!is_dir($mediapathtxt.'/img/'.$intervalue->{"@id"})) {
+												mkdir($mediapathtxt.'/img/'.$intervalue->{"@id"}.'/');
+											}
+
+											$mediapathtxt_ = $mediapathtxt.'/img/'.$intervalue->{"@id"}."/meta-data.txt";
+
+											$objarray = get_object_vars($intervalue);
+
+											wrt2file($mediapathtxt_,json_encode($objarray['meta-data']));
+
+											if(!empty($mediapath)){
+
+												$source1 = 'uploads/'.$mainfolder.'/medias/'.$mediapath[0];
+												$destination1 = $mediapathtxt.'/img/'.$intervalue->{"@id"}.'/';
+
+												extract_copy_files($source1,$destination1);
+											}
+
+										}
+
+									}
+								}
+								//ends.
+							}else{
+								if(!empty($container->media->urls->url)){
+
+									if($container->media->{"@detailedtype"} == "sound"){
+
+										if(!is_dir($mediapathtxt.'/audio')) {
+											mkdir($mediapathtxt.'/audio');
+										}
+										if(!is_dir($mediapathtxt.'/audio/'.$container->media->{"@id"})) {
+											mkdir($mediapathtxt.'/audio/'.$container->media->{"@id"}.'/');
+										}
+
+										$mediapathtxt_ = $mediapathtxt.'/audio/'.$container->media->{"@id"}."/meta-data.txt";
+
+										$objarray = get_object_vars($container->media);
+
+										wrt2file($mediapathtxt_,json_encode($objarray['meta-data']));
+
+										if(!empty($container->media->{"@url"})){
+
+											if(!empty($mediapath)){
+												$source1 = 'uploads/'.$mainfolder.'/medias/'.$mediapath[0];
+												$destination1 = $mediapathtxt.'/audio/'.$container->media->{"@id"}.'/';
+
+												extract_copy_files($source1,$destination1);
+											}
+										}
+									}
+									if($container->media->{"@detailedtype"} == "video"){
+										if(!is_dir($mediapathtxt.'/video')) {
+											mkdir($mediapathtxt.'/video');
+										}
+										if(!is_dir($mediapathtxt.'/video/'.$container->media->{"@id"})) {
+											mkdir($mediapathtxt.'/video/'.$container->media->{"@id"}.'/');
+										}
+
+										$mediapathtxt_ = $mediapathtxt.'/video/'.$container->media->{"@id"}."/meta-data.txt";
+
+										$objarray = get_object_vars($container->media);
+
+										wrt2file($mediapathtxt_,json_encode($objarray['meta-data']));
+
+										if(!empty($mediapath)){
+
+											$source1 = 'uploads/'.$mainfolder.'/medias/'.$mediapath[0];
+											$destination1 = $mediapathtxt.'/video/'.$container->media->{"@id"}.'/';
+
+											extract_copy_files($source1,$destination1);
+										}
+									}
+								}
+
+								if(is_array($container->media)){
+									if($container->media){
+										$mediapath = explode('.',$container->media[0]->{"@url"});
+										if($container->media[0]->{"@detailedtype"} == "image"){
+											if(!is_dir($mediapathtxt.'/img')) {
+												mkdir($mediapathtxt.'/img');
+											}
+											if(!is_dir($mediapathtxt.'/img/'.$container->media[0]->{"@id"})) {
+												mkdir($mediapathtxt.'/img/'.$container->media[0]->{"@id"}.'/');
+											}
+
+											$mediapathtxt_ = $mediapathtxt.'/img/'.$container->media[0]->{"@id"}."/meta-data.txt";
+
+											$objarray = get_object_vars($container->media[0]);
+
+											wrt2file($mediapathtxt_,json_encode($objarray['meta-data']));
+
+											if(!empty($mediapath)){
+
+												$source1 = 'uploads/'.$mainfolder.'/medias/'.$mediapath[0];
+												$destination1 = $mediapathtxt.'/img/'.$container->media[0]->{"@id"}.'/';
+
+												extract_copy_files($source1,$destination1);
+											}
+										}
+									}
+
+								}
+							}
+						}
+
+					}
+				}else{
+					$container = $jsencode->exercise->containers->container;
+				}
+			}
 
 		}//End of foreach.
+
+	}
+}
+
+function copy_theme_images($mainfolder){
+	// find images in themes folder
+	$all_images = glob('uploads/'.$mainfolder.'/themes/custom/**/res/images/*.*');
+	$all_images = array_unique($all_images);
+	if(!is_dir('output/'.$mainfolder.'/theme_images') && count($all_images)>0){
+		mkdir('output/'.$mainfolder.'/theme_images');
+	}
+	foreach($all_images as $img){
+		$extension = pathinfo($img, PATHINFO_EXTENSION);
+		$filename = basename($img, '.'.$extension);
+		copy($img, 'output/'.$mainfolder.'/theme_images/'.$filename.'.'.$extension);
+	}
+	$preview_image = glob('uploads/'.$mainfolder.'/themes/custom/**/*.*');
+	foreach($preview_image as $img){
+		$extension = pathinfo($img, PATHINFO_EXTENSION);
+		$filename = basename($img, '.'.$extension);
+		copy($img, 'output/'.$mainfolder.'/theme_images/'.$filename.'.'.$extension);
 	}
 }
 
@@ -588,17 +922,38 @@ function url(){
 }
 
 function sanitize($string){
-	return preg_replace("/[^a-z0-9\_\-\.]/i", '', $string);
+	return preg_replace("/[^a-z0-9\_\-\.]/iu", '', $string);
 }
 
 // remove directory and sub itemss
 function rmrf($dir) {
     foreach (glob($dir) as $file) {
         if (is_dir($file)) { 
-            rmrf("$file/*");
+            rmrf($file."/*");
             rmdir($file);
         } else {
             unlink($file);
         }
     }
+}
+
+// replace p tags with new line
+function stripp($string){
+	$string = str_replace('<P>', '', $string);
+	$string = str_replace('<LI>', '-- ', $string);
+	$string = str_replace(array('</P>','</LI>'), PHP_EOL , $string);
+	return strip_tags($string);
+}
+
+// write to file
+function wrt2file($file, $text){
+
+	if(!file_exists($file)){
+		$myfile = fopen($file, "w+")  ;
+	}else{
+		$myfile = fopen($file, "a")  ;
+	}
+
+	fwrite($myfile, $text."\n");	
+	fclose($myfile);
 }
