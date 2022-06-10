@@ -183,7 +183,7 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 				}
 				//ends.
 			}else{
-				if(!empty($jsencode->exercise->media->urls->url) && !empty($jsencode->exercise->media->url)){
+				if(!empty($jsencode->exercise->media->urls->url)){
 
 					if($jsencode->exercise->media->{"@detailedtype"} == "sound"){
 
@@ -268,6 +268,8 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 					wrt2file($mediapathtxt,stripp($jsencode->exercise->introduction->{'#text'}));
 				}else if(isset($jsencode->exercise->introduction) && !empty($jsencode->exercise->introduction) && is_string($jsencode->exercise->introduction)){
 					wrt2file($mediapathtxt,stripp($jsencode->exercise->introduction));
+				}else if(isset($jsencode->exercise->introduction->text) && !empty($jsencode->exercise->introduction->text) && is_string($jsencode->exercise->introduction->text)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->introduction->text));
 				}
 			}
 			if(isset($jsencode->exercise->intro)){
@@ -275,6 +277,8 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 					wrt2file($mediapathtxt,stripp($jsencode->exercise->intro->text));
 				}else if(isset($jsencode->exercise->intro) && !empty($jsencode->exercise->intro) && is_string($jsencode->exercise->intro)){
 					wrt2file($mediapathtxt,stripp($jsencode->exercise->intro));
+				}else if(isset($jsencode->exercise->intro->text) && !empty($jsencode->exercise->intro->text) && is_string($jsencode->exercise->intro->text)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->intro->text));
 				}
 			}
 			if(isset($jsencode->exercise->graphiccaption)){
@@ -296,6 +300,8 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 					wrt2file($mediapathtxt,stripp($jsencode->exercise->conclusion->text));
 				}else if(isset($jsencode->exercise->conclusion) && !empty($jsencode->exercise->conclusion) && is_string($jsencode->exercise->conclusion)){
 					wrt2file($mediapathtxt,stripp($jsencode->exercise->conclusion));
+				}else if(isset($jsencode->exercise->conclusion->text) && !empty($jsencode->exercise->conclusion->text) && is_string($jsencode->exercise->conclusion->text)){
+					wrt2file($mediapathtxt,stripp($jsencode->exercise->conclusion->text));
 				}
 			}
 			if(isset($jsencode->exercise->score)){
@@ -463,6 +469,15 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 			if($jsencode->exercise->bulletPoints->bulletPoint){
 				foreach ($jsencode->exercise->bulletPoints->bulletPoint as $bpkey => $bpvalue) {
 
+					if(isset($bpvalue->text)&&is_string($bpvalue->text)&&!empty($bpvalue->text)){
+						if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint')) {
+							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint');
+						}
+						if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.($bpkey+1))) {
+							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.($bpkey+1));
+						}
+						wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.($bpkey+1).'/text.txt',stripp($bpvalue->text));
+					}
 					if(!empty($bpvalue->media->urls->url)){
 						$tempextras = explode('.',$bpvalue->media->{"@url"});
 						if($bpvalue->media->{"@type"} == "sound"){
@@ -470,26 +485,26 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint')) {
 								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint');
 							}
-							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.$bpvalue->media->{"@id"})) {
-								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.$bpvalue->media->{"@id"});
+							if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.($bpkey+1))) {
+								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.($bpkey+1));
 							}
 
-							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.$bpvalue->media->{"@id"}."/meta-data.txt";
+							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.($bpkey+1)."/meta-data.txt";
 
 
 							$objarray = get_object_vars($bpvalue->media);
 
 							wrt2file($mediapathtxt,json_encode($objarray['meta-data']));
 
-							$bptxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.$bpvalue->media->{"@id"}."/text.txt";
-							wrt2file($bptxt,stripp($bpvalue->text));
+							/*$bptxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.($bpkey+1)."/text.txt";
+							wrt2file($bptxt,stripp($bpvalue->text));*/
 
 
 							if(!empty($bpvalue->media->{"@url"})){
 
 								if(!empty($tempextras)){
 									$source1 = 'uploads/'.$mainfolder.'/medias/'.$tempextras[0];
-									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.$bpvalue->media->{"@id"};
+									$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/bulletPoint/'.($bpkey+1);
 
 									extract_copy_files($source1,$destination1);
 								}
@@ -645,6 +660,13 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 									wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/text.txt' , stripp($alt->response->graphiccaption->text));
 								}else if(isset($alt->response->graphiccaption) && !empty($alt->response->graphiccaption) && is_string($alt->response->graphiccaption)){
 									wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/text.txt' , stripp($alt->response->graphiccaption));
+								}
+							}
+							if(isset($alt->response->graphictitle)){
+								if(isset($alt->response->graphictitle->text) && !empty($alt->response->graphictitle->text) && is_string($alt->response->graphictitle->text)){
+									wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/text.txt' , stripp($alt->response->graphictitle->text));
+								}else if(isset($alt->response->graphictitle) && !empty($alt->response->graphictitle) && is_string($alt->response->graphictitle)){
+									wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/alternative/'.($key_alt+1).'/text.txt' , stripp($alt->response->graphictitle));
 								}
 							}
 						}
