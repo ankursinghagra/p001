@@ -233,7 +233,6 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 						}
 					}
 				}
-
 			}
 
 
@@ -248,7 +247,6 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 					wrt2file($mediapathtxt,stripp($jsencode->exercise->title));
 				}
 			}
-
 			if(isset($jsencode->exercise->instruction)){
 				if(isset($jsencode->exercise->instruction->{'#text'}) && !empty($jsencode->exercise->instruction->{'#text'}) && is_string($jsencode->exercise->instruction->{'#text'})){
 					wrt2file($mediapathtxt,stripp($jsencode->exercise->instruction->{'#text'}));
@@ -311,7 +309,6 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 					wrt2file($mediapathtxt,stripp(str_replace('[X]','',$jsencode->exercise->score)));
 				}
 			}
-
 			if(!empty($jsencode->exercise->text)){
 				if(isset($jsencode->exercise->text) && is_array($jsencode->exercise->text)){
 					$text_g = '';
@@ -334,7 +331,6 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 					
 				}
 			}
-
 
 			if(isset($jsencode->exercise->texts)&&!empty($jsencode->exercise->texts)){
 				if(isset($jsencode->exercise->texts->zone) && is_array($jsencode->exercise->texts->zone)){
@@ -367,7 +363,6 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 						}
 					}
 				}
-
 			}
 
 			//creating the marks files starts.
@@ -382,24 +377,24 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 						$markfilename = $mvalue->media->{"@url"};
 						$explodemark = explode(".", $markfilename);
 						$marksource = 'uploads/'.$mainfolder.'/medias/'.$explodemark[0].'.jpg';
-						$markdestination = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/marks/'.$mvalue->media->{"@elemnum"}.'/'.$explodemark[0].'.jpg';
+						$markdestination = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/marks/'.($mkey+1).'/'.$explodemark[0].'.jpg';
 						copy($marksource, $markdestination);
 
 					}else{
 
-						if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/marks/'.$mvalue->{"@elemnum"})) {
+						if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/marks/'.($mkey+1))) {
 
 
-							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/marks/'.$mvalue->{"@elemnum"});
+							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/marks/'.($mkey+1));
 
 							$tempcount = $counter;
 
 							$source1 = 'uploads/'.$mainfolder.'/medias/'.$topexplode[0].'/Q'.$tempcount."_".$topexplode[0].".png";
 
-							$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/marks/'.$mvalue->{"@elemnum"}.'/Q'.$tempcount."_".$topexplode[0].".png";
+							$destination1 = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/marks/'.($mkey+1).'/Q'.$tempcount."_".$topexplode[0].".png";
 							copy($source1, $destination1);
 
-							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/marks/'.$mvalue->{"@elemnum"}."/text.txt";
+							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/marks/'.($mkey+1)."/text.txt";
 
 							wrt2file($mediapathtxt,stripp($mvalue->text->{"#text"}));
 
@@ -412,9 +407,9 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 				}
 			}
 
-	    //Creating marks file ends.
+	    	//Creating marks file ends.
 
-	    //Creating the body files.
+	    	//Creating the body files.
 			if(!empty($jsencode->exercise->body)){
 				if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/body/')) {
 					mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/body/');
@@ -518,7 +513,7 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 				foreach ($jsencode->exercise->items->item as $itemkey => $itemvalue) {
 
 
-					if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.$itemvalue->media[0]->{"@id"})) {
+					if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.($itemkey+1))) {
 
 						if(!empty($itemvalue->media[0]->{"@url"})){
 
@@ -526,23 +521,23 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 								mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items');
 							}
 
-							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.$itemvalue->media[0]->{"@id"});
+							mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.($itemkey+1));
 
 							$itemexplode = explode(".", $itemvalue->media[0]->{"@url"});
 
 							$itemsource = 'uploads/'.$mainfolder.'/medias/'.$itemexplode[0].'/Q1_'.$itemvalue->media[0]->{"@url"};
 
-							$itemdestination = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.$itemvalue->media[0]->{"@id"}.'/Q1_'.$itemvalue->media[0]->{"@url"};
+							$itemdestination = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.($itemkey+1).'/Q1_'.$itemvalue->media[0]->{"@url"};
 
 							copy($itemsource, $itemdestination);
 
-							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.$itemvalue->media[0]->{"@id"}."/meta-data.txt";
+							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.($itemkey+1)."/meta-data.txt";
 
 							$objarray = get_object_vars($itemvalue->media[0]);
 
 							wrt2file($mediapathtxt,json_encode($objarray['meta-data']));
 
-							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.$itemvalue->media[0]->{"@id"}."/text.txt";
+							$mediapathtxt = 'output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/items/'.($itemkey+1)."/text.txt";
 							if(isset($itemvalue->title) && !empty($itemvalue->title) && is_string($itemvalue->title)){
 								wrt2file($mediapathtxt,stripp($itemvalue->title));
 							}
@@ -1012,6 +1007,14 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 				}
 			}
 
+			if(isset($jsencode->exercise->embedded)){
+				if(isset($jsencode->exercise->embedded->{"@src"})&&!empty($jsencode->exercise->embedded->{"@src"})){
+					if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/embedded')) {
+						mkdir('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/embedded');
+					}
+					wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/'.$value->title.'/embedded/src.txt' , $jsencode->exercise->embedded->{"@src"});
+				}
+			}
 		}//End of foreach.
 
 	}
