@@ -7,6 +7,8 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 
 		$folder_no_a = str_pad(($key_a+1), 2, '0', STR_PAD_LEFT);
 
+		wrt2file('output/'.$mainfolder.'/chapters.txt',$folder_no_a.' '.sanitize2($dataobject->name));
+
 		$dataobject->name = $folder_no_a."_".sanitize($dataobject->name);
 		//creating the chapter folder.
 		if(!is_dir('output/'.$mainfolder.'/'.$dataobject->name)) {
@@ -18,8 +20,10 @@ function create_directories($mainfolder,$dataobject,$key_a=null,$path = null){
 			$folder_no_b = str_pad(($key+1), 2, '0', STR_PAD_LEFT);
 
 			if(empty($value->title)){
+					wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/exercises.txt',$folder_no_b.' Untitled');
 					$value->title = $folder_no_b."_Untitled";
 			}else{
+					wrt2file('output/'.$mainfolder.'/'.$dataobject->name.'/exercises.txt',$folder_no_b.' '.sanitize2($value->title));
 					$value->title = $folder_no_b."_".sanitize($value->title);
 			}
 			
@@ -1276,6 +1280,11 @@ function sanitize($string){
 	if(strlen($string)>50){
 		$string = substr($string, 0, 50);
 	}
+	return $string;
+}
+function sanitize2($string){
+	$string = str_replace('.','',$string);
+	$string = preg_replace("/[^a-z0-9\_\-\.\ \,\&]/iu", '', $string);
 	return $string;
 }
 
